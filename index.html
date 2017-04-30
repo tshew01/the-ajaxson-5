@@ -1,21 +1,42 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>The AJAXson 5</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link href="css/bootstrap.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container">
+    <h1>The AJAXson 5</h1>
+    <form id="form">
+      <div class="well col-xs-12">
+        <div class="input-group mb-2 mr-sm-2 mb-sm-0" id="input-one">
+          <p>What kind of Jackson 5 related gif do you want?</p>
+          <input id="tag" class="form-control" type="text"/>
+      </div>
+       </div>
+        <div class="well col-xs-12">
+          <p>Prove you are not a robot by filling in this sentence</p>
+          <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+            <input id ="captcha" type="text" class="form-control"required/>
+
+            <div class="input-group-addon">Jacksons are better than 1.
+            </div>
+          </div>
+          <button id ="submit" class="btn btn-primary">Get my Gif!</button>
+          <div id="error" hidden="true">
+            <div class="col-xs-12 col-lg-6 alert alert-danger glyphicon glyphicon-remove" >
+              <span class="sr-only">Error:</span>
+              No gifs for you.
+            </div>
+         </div>
+        </div>
+      </form>
+    <p id="feedback" hidden="true"></p>
+    <img id="gif" class="jumbotron col-xs-12 col-md-6" src="" hidden="true"/>
+    </div>
+  </div>
     <script src="https://code.jquery.com/jquery-latest.min.js"></script>
     <script type="text/javascript" src="request-gif.js"></script>
-</head>
-<body>
-    <h1>The AJAXson 5</h1>
-
-    <form id="form-gif-request" />
-        <label>What kind of Jackson 5 related gif do you want?</label>
-        <input name="tag" type="text"/>
-        <input type="submit" value="Get my Gif!" />
-    </form>
-
-    <img id="gif" src="" hidden="true"/>
-    <p id="feedback" hidden="true`"></p>
-
 </body>
 </html>
