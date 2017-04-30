@@ -1,6 +1,6 @@
 $(document).ready(function() {
     // register our function as the "callback" to be triggered by the form's submission event
-    $("#form").submit(fetchAndDisplayGif); // in other words, when the form is submitted, fetchAndDisplayGif() will be executed
+    $("#form-gif-request").submit(fetchAndDisplayGif); // in other words, when the form is submitted, fetchAndDisplayGif() will be executed
 });
 
 
@@ -10,72 +10,64 @@ $(document).ready(function() {
  *
  * upon receiving a response from Giphy, updates the DOM to display the new GIF
  */
-
-
-
-
 function fetchAndDisplayGif(event) {
-  event.preventDefault();
-  var searchQuery = $('#tag').val();
-  var captcha = $('#captcha').val()
-  $("#error").attr("hidden", true);
-  if (captcha === "5") {
 
-    $(document).ajaxStart(function () {
-      $("#feedback").text("loading...").show();
-    //  $('#submit').attr("disabled",true);
-    }).ajaxStop(function () {
-    //  $('#submit').attr("disabled",false);
-      $("#feedback").hide();
-  });
+    // This prevents the form submission from doing what it normally does: send a request (which would cause our page to refresh).
+    // Because we will be making our own AJAX request, we dont need to send a normal request and we definitely don't want the page to refresh.
+    event.preventDefault();
 
-      // This prevents the form submission from doing what it normally does: send a request (which would cause our page to refresh).
-      // Because we will be making our own AJAX request, we dont need to send a normal request and we definitely don't want the page to refresh.
+    // get the user's input text from the DOM
+    var searchQuery = $('#tag').val(); //e.g. "dance"
+    var jacksonsNum = $('#no-robot').val();
 
-      // get the user's input text from the DOM
+    if (jacksonsNum != 5) {
+      console.log("problem!!!!");
+      $("#gif").attr("hidden", true);
+      $("#no-robot").attr("style", "border: 3px solid #bc3440");
+      $("#denied").attr("style", "color: #bc3440");
+      $("#denied").text("No GIF for you!");
+    }
+    else {
+      //clear error messages
+      $("#no-robot").attr("style", "border: 1px solid #444444");
+      $("#denied").text("");
+
       // configure a few parameters to attach to our request
       var params = {
           api_key: "dc6zaTOxFJmzC",
-          tag : "jackson 5" + searchQuery
-          //  should be e.g. "jackson 5 dance"
+          tag : "jackson 5 " + searchQuery // e.g. "jackson 5 dance"
       };
+      //console.log(params.tag);
 
       // make an ajax request for a random GIF
       $.ajax({
-          url: "https://api.giphy.com/v1/gifs/random", // TODO where should this request be sent?
-          data: params, // attach those extra parameters onto the request
-
+          url: "http://api.giphy.com/v1/gifs/search?q=" + params.tag + "&api_key=" + params.api_key,
           success: function(response) {
               // if the response comes back successfully, the code in here will execute.
               // jQuery passes us the `response` variable, a regular javascript object created from the JSON the server gave us
-              var gif = response.data.image_url;
-             //set the source attribute of our image to the image_url of the GIF
-              $('#gif').attr('src',gif);
-              // hide the feedback message and display the image
+
+              // 1. sets the source attribute of our image to the image_url of the GIF
+              // 2. hides the feedback message and display the image
+              var randomPick = Math.floor(Math.random() * 25);
+              var randomGif = response.data[randomPick];
+              var randomGifURL = randomGif.images.original.url;
+              $('#gif').attr("src", randomGifURL);
               setGifLoadedStatus(true);
           },
-          complete: function(){
-            console.log("ajax complete");
-            setGifLoadedStatus(true);
-          },
           error: function() {
-            console.log("ajax error");
               // if something went wrong, the code in here will execute instead of the success function
+
               // give the user an error message
-              $("#feedback").text("Sorry, could not load GIF. Try again!").attr("hidden",false);
+              $("#feedback").text("Sorry, could not load GIF. Try again!");
               setGifLoadedStatus(false);
           }
-       });
-   } else{
+        });
 
-     $("div#error").attr("hidden",false);
-      setGifLoadedStatus(false);
-     }
-
+        // gives the user a "Loading..." message while they wait
+        $("#feedback").text("Loading...");
+        setGifLoadedStatus(false);
+    }
 }
-
-    // TODO
-    // give the user a "Loading..." message while they wait
 
 
 /**
